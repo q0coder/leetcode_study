@@ -1,0 +1,37 @@
+
+#include<iostream>
+#include<queue>
+using namespace std;
+//struct TreeNode {
+//    int val;
+//    TreeNode* left;
+//    TreeNode* right;
+//   TreeNode() : val(0), left(nullptr), right(nullptr) {}
+//   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+//   TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+//    
+//};
+//class Solution {
+//public:
+//    int maxDepth(TreeNode* root) {
+//        if (root == nullptr)
+//        {
+//            return 0;
+//        }
+//        int n1 = maxDepth(root->left) + 1;
+//        int n2 = maxDepth(root->right) + 1;
+//        return max(n1, n2);
+//    }
+//};
+//int main()
+//{
+//
+//}
+//
+//
+
+//int main()
+//{
+//	queue<int>que;
+//	
+//}
