@@ -1,0 +1,25 @@
+#include <vector>
+
+class Solution {
+public:
+    int findDuplicate(std::vector<int>& nums) {
+        // 第一阶段：寻找相遇点
+        int slow = nums[0];
+        int fast = nums[0];
+
+        do {
+            slow = nums[slow];          // 慢指针走一步
+            fast = nums[nums[fast]];    // 快指针走两步
+        } while (slow != fast);
+
+        // 第二阶段：寻找环的入口
+        // 将快指针重置到起点，然后两个指针都每次走一步
+        fast = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+
+        return slow; // 或者 return fast;
+    }
+};
