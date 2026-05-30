@@ -1,0 +1,79 @@
+#include <iostream>
+#include <unordered_map>
+#include <list>
+#include <utility> // for std::pair
+
+class LRUCache {
+private:
+    int capacity_;
+
+    // 双向链表：存储 key-value 对
+    // 链表头 (front) 是最近使用的，链表尾 (back) 是最久未使用的
+    std::list<std::pair<int, int>> cacheList;
+
+    // 哈希表：key -> 指向链表中对应节点的迭代器
+    // 这使得我们可以通过 key 在 O(1) 时间内找到链表中的位置
+    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> cacheMap;
+
+public:
+    LRUCache(int capacity) : capacity_(capacity) {}
+
+    int get(int key) {
+        auto it = cacheMap.find(key);
+
+        // 如果 key 不存在，返回 -1
+        if (it == cacheMap.end()) {
+            return -1;
+        }
+
+        // Key 存在：
+        // 1. 获取链表中的节点
+        auto listIt = it->second;
+
+        // 2. 将该节点移动到链表头部（标记为最近使用）
+        // splice 操作是 O(1) 的，它只是修改指针，不涉及内存分配或拷贝
+        cacheList.splice(cacheList.begin(), cacheList, listIt);
+
+        // 3. 返回 value
+        return listIt->second;
+    }
+
+    void put(int key, int value) {
+        auto it = cacheMap.find(key);
+
+        if (it != cacheMap.end()) {
+            // 情况 A：Key 已存在
+            // 1. 更新 value
+            it->second->second = value;
+
+            // 2. 移动到链表头部（标记为最近使用）
+            cacheList.splice(cacheList.begin(), cacheList, it->second);
+        } else {
+            // 情况 B：Key 不存在
+            // 检查容量是否已满
+            if (cacheList.size() >= static_cast<size_t>(capacity_)) {
+                // 淘汰最久未使用的元素（链表尾部）
+                int lruKey = cacheList.back().first;
+
+                // 从哈希表中删除该 key
+                cacheMap.erase(lruKey);
+
+                // 从链表尾部删除该节点
+                cacheList.pop_back();
+            }
+
+            // 将新元素添加到链表头部
+            cacheList.push_front({key, value});
+
+            // 将新元素的 key 和 链表头部的迭代器 存入哈希表
+            cacheMap[key] = cacheList.begin();
+        }
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
